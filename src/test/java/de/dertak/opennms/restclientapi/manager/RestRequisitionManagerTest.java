@@ -25,13 +25,12 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package de.dertak.opennms.restclientapi;
+package de.dertak.opennms.restclientapi.manager;
 
 import de.dertak.opennms.restclientapi.helper.RestHelper;
+import org.junit.Before;
 import org.junit.Test;
-import org.opennms.netmgt.provision.persist.requisition.Requisition;
-import org.opennms.netmgt.provision.persist.requisition.RequisitionCategory;
-import org.opennms.netmgt.provision.persist.requisition.RequisitionCollection;
+import org.junit.Assert;
 import org.opennms.netmgt.provision.persist.requisition.RequisitionNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,27 +39,25 @@ import org.slf4j.LoggerFactory;
  *
  * @author Markus@OpenNMS.org
  */
-public class RestRequisitionProviderTest {
+public class RestRequisitionManagerTest {
 
-    private static Logger logger = LoggerFactory.getLogger(RestRequisitionProviderTest.class);
+    private static Logger logger = LoggerFactory.getLogger(RestRequisitionManagerTest.class);
 
     private String baseUrl = "http://demo.opennms.com/opennms/";
     private String username = "demo";
     private String password = "demo";
 
-    @Test
-    public void testGetRequisitions() {
+    private RestRequisitionManager manager;
 
-        logger.info("Getting Requisitions from '{}'", baseUrl);
-        RequisitionCollection requisitions = RestRequisitionProvider.getRequisitions(RestHelper.createApacheHttpClient(username, password), baseUrl, "?limit=0");
-        logger.info("Got '{}' Requisitions from '{}'", requisitions.size(), baseUrl);
-        for (Requisition requisition : requisitions.getRequisitions() ) {
-            for (RequisitionNode requNode : requisition.getNodes()) {
-                for (RequisitionCategory requCategory : requNode.getCategories()) {
-                    logger.info("Found Category Name '{}'", requCategory.getName());
-                }
-            }
-        }
-        logger.info("Thanks for computing with OpenNMS!");
+    @Before
+    public void setup() {
+        manager = new RestRequisitionManager(RestHelper.createApacheHttpClient(username, password), baseUrl);
+    }
+    
+    @Test
+    public void testSomeMethod() {
+        manager.loadNodesByLableForAllRequisitions();
+        RequisitionNode reqNode = manager.getReqisitionNode("www.nasdaq.com");
+        Assert.assertNotNull(reqNode);
     }
 }

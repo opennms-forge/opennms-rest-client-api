@@ -27,18 +27,24 @@
  *******************************************************************************/
 package de.dertak.opennms.restclientapi;
 
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.opennms.netmgt.provision.persist.requisition.RequisitionCollection;
+import org.opennms.netmgt.provision.persist.requisition.RequisitionNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author Markus@OpenNMS.org
+ */
 public class RestRequisitionProvider {
 
     private static Logger logger = LoggerFactory.getLogger(RestRequisitionProvider.class);
 
     public static RequisitionCollection getRequisitions(ApacheHttpClient httpClient, String baseUrl, String parameters) {
-        WebResource webResource = httpClient.resource(baseUrl + "rest/requisitions/deployed" + parameters);
+        WebResource webResource = httpClient.resource(baseUrl + "rest/requisitions/" + parameters);
         RequisitionCollection requisitions = null;
         try {
             requisitions = webResource.header("Accept", "application/xml").get(RequisitionCollection.class);
@@ -46,5 +52,14 @@ public class RestRequisitionProvider {
             logger.debug("Rest-Call for Requisitions went wrong", ex);
         }
         return requisitions;
+    }
+
+    public static void updateRequisionNodeCategories(ApacheHttpClient httpClient, String baseUrl, String parameters, RequisitionNode requisitionNode) {
+        WebResource webResource = httpClient.resource(baseUrl + "rest/requisitions/" + requisitionNode.getParentForeignSource() + "/nodes/"+ requisitionNode.getForeignId() +"/categories" + parameters);
+        try {
+            webResource.type("application/xml").post(ClientResponse.class, requisitionNode.getCategories());
+        } catch (Exception ex) {
+            logger.debug("Rest-Call for Node Update Requisitions went wrong", ex);
+        }
     }
 }

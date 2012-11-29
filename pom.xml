@@ -19,7 +19,7 @@
         <dependency>
             <groupId>org.opennms</groupId>
             <artifactId>opennms-config-model</artifactId>
-            <version>1.11.4-SNAPSHOT</version>
+            <version>1.11.3</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>org.opennms</groupId>
             <artifactId>opennms-provision-persistence</artifactId>
-            <version>1.11.4-SNAPSHOT</version>
+            <version>1.10.7</version>
             <type>jar</type>
             <exclusions>
                 <exclusion>
@@ -92,14 +92,14 @@
         <!-- OpenNMS Repository to get the Model Classes -->
         <repository>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
-            <id>opennms-snapshots</id>
-            <name>OpenNMS Snapshot Maven Repository</name>
-            <url>http://maven.opennms.org/content/groups/opennms.org-snapshot</url>
+            <id>opennms</id>
+            <name>OpenNMS Release Maven Repository</name>
+            <url>http://maven.opennms.org/content/groups/opennms.org-release/</url>
         </repository>
     </repositories>
     
