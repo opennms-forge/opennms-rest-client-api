@@ -15,10 +15,28 @@
     </properties>
 
     <dependencies>
-        <!-- OpenNMS Model for OnmsOutage -->
+        <!-- OpenNMS Model -->
         <dependency>
             <groupId>org.opennms</groupId>
             <artifactId>opennms-config-model</artifactId>
+            <version>1.11.4-SNAPSHOT</version>
+            <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- OpenNMS Model for Provisioning -->
+        <dependency>
+            <groupId>org.opennms</groupId>
+            <artifactId>opennms-provision-persistence</artifactId>
             <version>1.11.4-SNAPSHOT</version>
             <type>jar</type>
             <exclusions>
@@ -68,8 +86,6 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
     
     <repositories>
