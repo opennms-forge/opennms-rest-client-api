@@ -22,13 +22,13 @@ package de.dertak.opennms.restclientapi.manager;
 
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import de.dertak.opennms.restclientapi.RestRequisitionProvider;
-import java.util.HashMap;
-import java.util.Map;
 import org.opennms.netmgt.provision.persist.requisition.Requisition;
 import org.opennms.netmgt.provision.persist.requisition.RequisitionNode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- *
  * @author Markus@OpenNMS.org
  */
 //TODO missing structure that adds the requisition for the nodes
@@ -45,7 +45,7 @@ public class RestRequisitionManager {
         assert this.baseUrl != null;
     }
 
-    public void loadNodesByLableForRequisition(String requisitionName, String parameter) {
+    public void loadNodesByLabelForRequisition(String requisitionName, String parameter) {
         Requisition requisition = RestRequisitionProvider.getRequisition(httpClient, baseUrl, requisitionName, parameter);
         for (RequisitionNode reqNode : requisition.getNodes()) {
             reqNodesByLable.put(reqNode.getNodeLabel(), reqNode);
