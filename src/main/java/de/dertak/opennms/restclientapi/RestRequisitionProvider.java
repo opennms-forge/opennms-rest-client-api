@@ -54,6 +54,13 @@ public class RestRequisitionProvider {
         return requisitions;
     }
 
+    /**
+     * @deprecated Its not done...
+     * @param httpClient
+     * @param baseUrl
+     * @param parameters
+     * @param requisitionNode
+     */
     public static void updateRequisionNodeCategories(ApacheHttpClient httpClient, String baseUrl, String parameters, RequisitionNode requisitionNode) {
         WebResource webResource = httpClient.resource(baseUrl + "rest/requisitions/" + requisitionNode.getParentForeignSource() + "/nodes/"+ requisitionNode.getForeignId() +"/categories" + parameters);
         try {

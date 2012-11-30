@@ -32,6 +32,7 @@ import org.opennms.netmgt.provision.persist.requisition.RequisitionNode;
  *
  * @author Markus@OpenNMS.org
  */
+//TODO missing structure that adds the requisition for the nodes
 public class RestRequisitionManager {
 
     private ApacheHttpClient httpClient = null;
@@ -45,16 +46,17 @@ public class RestRequisitionManager {
         assert this.baseUrl != null;
     }
 
-    /**
-     * Creates a map of NodeLabes to RequisitionNode for later use
-     */
-    public void loadNodesByLableForAllRequisitions() {
-        RequisitionCollection requisitions = RestRequisitionProvider.getRequisitions(httpClient, baseUrl, "");
+    public void loadNodesByLableForRequisition(String parameter) {
+        RequisitionCollection requisitions = RestRequisitionProvider.getRequisitions(httpClient, baseUrl, parameter);
         for (Requisition requisition : requisitions) {
             for (RequisitionNode reqNode : requisition.getNodes()) {
                 reqNodesByLable.put(reqNode.getNodeLabel(), reqNode);
             }
         }
+    }
+
+    public void loadNodesByLableForAllRequisition(String restProvisioningTest) {
+        loadNodesByLableForRequisition("");
     }
 
     public RequisitionNode getReqisitionNode(String nodeLabel) {
