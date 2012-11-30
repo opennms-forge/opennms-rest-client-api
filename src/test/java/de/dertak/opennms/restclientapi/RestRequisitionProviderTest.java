@@ -52,7 +52,7 @@ public class RestRequisitionProviderTest {
     public void testGetRequisitions() {
 
         logger.info("Getting Requisitions from '{}'", baseUrl);
-        RequisitionCollection requisitions = RestRequisitionProvider.getRequisitions(RestHelper.createApacheHttpClient(username, password), baseUrl, "?limit=0");
+        RequisitionCollection requisitions = RestRequisitionProvider.getAllRequisitions(RestHelper.createApacheHttpClient(username, password), baseUrl, "?limit=0");
         logger.info("Got '{}' Requisitions from '{}'", requisitions.size(), baseUrl);
         for (Requisition requisition : requisitions.getRequisitions() ) {
             for (RequisitionNode requNode : requisition.getNodes()) {
