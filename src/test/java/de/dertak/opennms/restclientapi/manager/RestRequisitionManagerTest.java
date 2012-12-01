@@ -56,8 +56,8 @@ public class RestRequisitionManagerTest {
     
     @Test
     public void testSomeMethod() {
-        manager.loadNodesByLabelForRequisition("", "");
-        RequisitionNode reqNode = manager.getReqisitionNode("www.nasdaq.com");
+        manager.loadNodesByLabelForRequisition("OpenNMS%20Servers", "");
+        RequisitionNode reqNode = manager.getReqisitionNode("mrscrabtree.internal.opennms.com");
         Assert.assertNotNull(reqNode);
     }
 }

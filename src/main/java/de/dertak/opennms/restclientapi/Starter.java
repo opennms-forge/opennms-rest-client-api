@@ -28,11 +28,11 @@
 package de.dertak.opennms.restclientapi;
 
 import de.dertak.opennms.restclientapi.helper.RestHelper;
-import java.util.List;
 import org.opennms.netmgt.model.OnmsOutage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class Starter {
 

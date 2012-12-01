@@ -29,49 +29,89 @@ import org.opennms.netmgt.provision.persist.requisition.RequisitionNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.MediaType;
+
 /**
- *
  * @author Markus@OpenNMS.org
  */
 public class RestRequisitionProvider {
 
     private static Logger logger = LoggerFactory.getLogger(RestRequisitionProvider.class);
 
-    public static RequisitionCollection getAllRequisitions(ApacheHttpClient httpClient, String baseUrl, String parameters) {
-        WebResource webResource = httpClient.resource(baseUrl + "rest/requisitions/" + parameters);
+    /**
+     * Set path to OpenNMS ReST request for
+     */
+    private static final String ONMS_REST_REQUISITION_PATH = "rest/requisitions/";
+
+    private static final String ONMS_REST_REQUISITION_NODE_PATH = "/nodes/";
+
+    private static final String ONMS_PROVISIONING_REQUISITION_RESCAN_FALSE = "/import?rescanExisting=false";
+
+    private static final String HEADER_NAME_ACCEPT = "Accept";
+
+    private WebResource m_webResource;
+
+    private ApacheHttpClient m_apacheHttpClient;
+
+    private String m_baseUrl;
+
+    public RestRequisitionProvider(ApacheHttpClient apacheHttpClient, String baseUrl) {
+        m_apacheHttpClient = apacheHttpClient;
+        m_baseUrl = baseUrl;
+    }
+
+    public RequisitionCollection getAllRequisitions(String parameters) {
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + parameters);
+        logger.debug("ReST request: '{}'", m_webResource.getURI());
         RequisitionCollection requisitions = null;
         try {
-            requisitions = webResource.header("Accept", "application/xml").get(RequisitionCollection.class);
+            requisitions = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(RequisitionCollection.class);
         } catch (Exception ex) {
-            logger.debug("Rest-Call for Requisitions went wrong", ex);
+            logger.debug("Rest call for Requisitions went wrong. Error message '{}'. URL: '{}'", ex, m_webResource.getURI());
         }
         return requisitions;
     }
 
-    public static Requisition getRequisition(ApacheHttpClient httpClient, String baseUrl, String requisitionName, String parameters) {
-        WebResource webResource = httpClient.resource(baseUrl + "rest/requisitions/"+ requisitionName + parameters);
+    public Requisition getRequisition(String requisitionName, String parameters) {
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + requisitionName + parameters);
         Requisition requisition = null;
+        logger.debug("Try getRequisition '{}', '{}'", requisitionName, m_webResource.getURI());
         try {
-            requisition = webResource.header("Accept", "application/xml").get(Requisition.class);
+            requisition = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(Requisition.class);
         } catch (Exception ex) {
-            logger.debug("Rest-Call for Requisition went wrong", ex);
+            logger.debug("Rest call for Requisitions went wrong. Error message '{}'.", ex);
         }
         return requisition;
     }
 
     /**
-     * @deprecated Its not done...
-     * @param httpClient
-     * @param baseUrl
-     * @param parameters
-     * @param requisitionNode
+     * Method to update the provisioning requisition by node. This method will update just a single node with the applied surveillance
+     * categories. It will synchronize the updated node directly to the OpenNMS database.
+     *
+     * @param requisitionNode Requisition node definition for update as {@link org.opennms.netmgt.provision.persist.requisition.RequisitionNode}
      */
-    public static void updateRequisionNodeCategories(ApacheHttpClient httpClient, String baseUrl, String parameters, RequisitionNode requisitionNode) {
-        WebResource webResource = httpClient.resource(baseUrl + "rest/requisitions/" + requisitionNode.getParentForeignSource() + "/nodes/" + requisitionNode.getForeignId() + "/categories" + parameters);
+    public void updateCategoriesByNode(String foreignSource, RequisitionNode requisitionNode) {
+        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl +
+                ONMS_REST_REQUISITION_PATH + foreignSource +
+                ONMS_REST_REQUISITION_NODE_PATH);
+
         try {
-            webResource.type("application/xml").post(ClientResponse.class, requisitionNode.getCategories());
+            logger.debug("Requisition node to push: '{}' to URL '{}'", requisitionNode, webResource.getURI());
+            webResource.type(MediaType.APPLICATION_XML).post(ClientResponse.class, requisitionNode);
         } catch (Exception ex) {
-            logger.debug("Rest-Call for Node Update Requisitions went wrong", ex);
+            logger.debug("Rest call for Node Update Requisitions went wrong", ex);
+        }
+    }
+
+    public void synchronizeNewlyProvisionedNodes(String provisioningRequisition) {
+        // http://localhost:8980/opennms/rest/requisitions/renamed-hiphop-artists/import?rescanExisting=false
+        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
+                provisioningRequisition + ONMS_PROVISIONING_REQUISITION_RESCAN_FALSE);
+        try {
+            logger.debug("Try to synchronize provisioning requisition: '{}'", webResource.getURI());
+            webResource.type(MediaType.APPLICATION_XML).put();
+        } catch (Exception ex) {
+            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'.", provisioningRequisition, webResource.getURI());
         }
     }
 }
