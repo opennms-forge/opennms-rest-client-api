@@ -57,7 +57,7 @@ public class RestRequisitionManagerTest {
     @Test
     public void testSomeMethod() {
         manager.loadNodesByLabelForRequisition("", "");
-        RequisitionNode reqNode = manager.getReqisitionNode("www.nasdaq.com");
+        RequisitionNode reqNode = manager.getRequisitionNode("www.nasdaq.com");
         Assert.assertNotNull(reqNode);
     }
 }

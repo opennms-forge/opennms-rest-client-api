@@ -37,6 +37,7 @@ public class RestRequisitionManager {
     private ApacheHttpClient httpClient = null;
     private String baseUrl = null;
     private Map<String, RequisitionNode> reqNodesByLabel = new HashMap<String, RequisitionNode>();
+    private Requisition requisition;
 
     public RestRequisitionManager(ApacheHttpClient httpClient, String baseUrl) {
         this.httpClient = httpClient;
@@ -46,13 +47,17 @@ public class RestRequisitionManager {
     }
 
     public void loadNodesByLabelForRequisition(String requisitionName, String parameter) {
-        Requisition requisition = RestRequisitionProvider.getRequisition(httpClient, baseUrl, requisitionName, parameter);
+        requisition = RestRequisitionProvider.getRequisition(httpClient, baseUrl, requisitionName, parameter);
         for (RequisitionNode reqNode : requisition.getNodes()) {
             reqNodesByLabel.put(reqNode.getNodeLabel(), reqNode);
         }
     }
 
-    public RequisitionNode getReqisitionNode(String nodeLabel) {
+    public RequisitionNode getRequisitionNode(String nodeLabel) {
         return reqNodesByLabel.get(nodeLabel);
+    }
+
+    public Requisition getRequisition() {
+        return requisition;
     }
 }
