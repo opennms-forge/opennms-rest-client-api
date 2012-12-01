@@ -43,9 +43,9 @@ public class RestRequisitionManagerTest {
 
     private static Logger logger = LoggerFactory.getLogger(RestRequisitionManagerTest.class);
 
-    private String baseUrl = "http://demo.opennms.com/opennms/";
-    private String username = "demo";
-    private String password = "demo";
+    private String baseUrl = "http://localhost:8980/opennms/";
+    private String username = "admin";
+    private String password = "admin";
 
     private RestRequisitionManager manager;
 
@@ -56,8 +56,8 @@ public class RestRequisitionManagerTest {
     
     @Test
     public void testSomeMethod() {
-        manager.loadNodesByLabelForRequisition("OpenNMS%20Servers", "");
-        RequisitionNode reqNode = manager.getReqisitionNode("mrscrabtree.internal.opennms.com");
+        manager.loadNodesByLabelForRequisition("Amazon", "");
+        RequisitionNode reqNode = manager.getRequisitionNode("TestNode");
         Assert.assertNotNull(reqNode);
     }
 }
