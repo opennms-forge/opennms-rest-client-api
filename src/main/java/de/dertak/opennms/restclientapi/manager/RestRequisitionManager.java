@@ -34,27 +34,27 @@ import java.util.Map;
 //TODO missing structure that adds the requisition for the nodes
 public class RestRequisitionManager {
 
-    private ApacheHttpClient httpClient = null;
-    private String baseUrl = null;
-    private Map<String, RequisitionNode> reqNodesByLabel = new HashMap<String, RequisitionNode>();
+    private ApacheHttpClient m_httpClient = null;
+    private String m_baseUrl = null;
+    private Map<String, RequisitionNode> m_reqNodesByLabel = new HashMap<String, RequisitionNode>();
     private RestRequisitionProvider m_restRequisitionProvider;
     private Requisition m_requisition;
 
     public RestRequisitionManager(ApacheHttpClient httpClient, String baseUrl) {
-        this.httpClient = httpClient;
-        this.baseUrl = baseUrl;
+        this.m_httpClient = httpClient;
+        this.m_baseUrl = baseUrl;
         m_restRequisitionProvider = new RestRequisitionProvider(httpClient, baseUrl);
     }
 
     public void loadNodesByLabelForRequisition(String requisitionName, String parameter) {
         m_requisition = m_restRequisitionProvider.getRequisition(requisitionName, parameter);
         for (RequisitionNode reqNode : m_requisition.getNodes()) {
-            reqNodesByLabel.put(reqNode.getNodeLabel(), reqNode);
+            m_reqNodesByLabel.put(reqNode.getNodeLabel(), reqNode);
         }
     }
 
     public RequisitionNode getRequisitionNode(String nodeLabel) {
-        return reqNodesByLabel.get(nodeLabel);
+        return m_reqNodesByLabel.get(nodeLabel);
     }
 
     public Requisition getRequisition() {

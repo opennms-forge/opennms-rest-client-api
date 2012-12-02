@@ -33,13 +33,13 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 
 public class RestHelper {
 
-    public static ApacheHttpClient createApacheHttpClient(String username, String password) {
+    public static ApacheHttpClient createApacheHttpClient(RestConnectionParameter restConnParm) {
         DefaultApacheHttpClientConfig httpClientConfig = new DefaultApacheHttpClientConfig();
 
         httpClientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 
         httpClientConfig.getProperties().put(httpClientConfig.PROPERTY_PREEMPTIVE_AUTHENTICATION, Boolean.TRUE);
-        httpClientConfig.getState().setCredentials(null, null, -1, username, password);
+        httpClientConfig.getState().setCredentials(null, restConnParm.getBaseUrl().getHost(), restConnParm.getPort(), restConnParm.getUsername(), restConnParm.getPassword());
 
         ApacheHttpClient httpClient = ApacheHttpClient.create(httpClientConfig);
 

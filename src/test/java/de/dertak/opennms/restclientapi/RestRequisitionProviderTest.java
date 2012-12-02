@@ -39,7 +39,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * @author Markus@OpenNMS.org
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>
+ * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
  */
 public class RestRequisitionProviderTest {
 
