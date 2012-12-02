@@ -72,10 +72,10 @@ public class RestRequisitionProvider {
         return requisitions;
     }
 
-    public Requisition getRequisition(String requisitionName, String parameters) {
-        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + requisitionName + parameters);
+    public Requisition getRequisition(String foreignSource, String parameters) {
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + foreignSource + parameters);
         Requisition requisition = null;
-        logger.debug("Try getRequisition '{}', '{}'", requisitionName, m_webResource.getURI());
+        logger.debug("Try getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         try {
             requisition = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(Requisition.class);
         } catch (Exception ex) {

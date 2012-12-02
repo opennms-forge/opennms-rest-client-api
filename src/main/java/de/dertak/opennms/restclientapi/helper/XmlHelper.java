@@ -28,15 +28,16 @@
 package de.dertak.opennms.restclientapi.helper;
 
 import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
-import java.io.StringReader;
-import java.io.StringWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public class XmlHelper {
 

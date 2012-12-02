@@ -46,8 +46,8 @@ public class RestRequisitionManager {
         m_restRequisitionProvider = new RestRequisitionProvider(httpClient, baseUrl);
     }
 
-    public void loadNodesByLabelForRequisition(String requisitionName, String parameter) {
-        m_requisition = m_restRequisitionProvider.getRequisition(requisitionName, parameter);
+    public void loadNodesByLabelForRequisition(String foreignSource, String parameter) {
+        m_requisition = m_restRequisitionProvider.getRequisition(foreignSource, parameter);
         for (RequisitionNode reqNode : m_requisition.getNodes()) {
             m_reqNodesByLabel.put(reqNode.getNodeLabel(), reqNode);
         }
