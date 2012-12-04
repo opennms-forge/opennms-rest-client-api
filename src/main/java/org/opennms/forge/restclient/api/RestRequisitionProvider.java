@@ -152,6 +152,7 @@ public class RestRequisitionProvider {
         } catch (Exception ex) {
             logger.debug("Rest call for Node Update Requisitions went wrong", ex);
         }
+        logger.debug("Push requisition '{}' was successfull.", foreignSource);
     }
 
     /**
@@ -172,6 +173,7 @@ public class RestRequisitionProvider {
         } catch (Exception ex) {
             logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", new Object[]{requisition.getForeignSource(), webResource.getURI(), ex.getMessage(), ex});
         }
+        logger.debug("Push requisition '{}' was successfull.", requisition.getForeignSource());
     }
 
     /**
