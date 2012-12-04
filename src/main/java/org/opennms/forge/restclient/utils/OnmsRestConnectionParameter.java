@@ -26,8 +26,9 @@
  *     http://www.opennms.com/
  *******************************************************************************/
 
-package de.dertak.opennms.restclientapi.helper;
+package org.opennms.forge.restclient.utils;
 
+import org.opennms.forge.restclient.utils.RestConnectionParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +38,10 @@ import java.net.URL;
 /**
  * <p>OnmsRestConnectionParameter class.</p>
  *
- * @author Ronny Trommer <ronny@opennms.org>
- * @version $Id: $
- * @since 1.8.1
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
+ * @version 1.0-SNAPSHOT
+ * @since 1.0-SNAPSHOT
  */
 public class OnmsRestConnectionParameter implements RestConnectionParameter {
 

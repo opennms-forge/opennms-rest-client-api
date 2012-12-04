@@ -25,30 +25,47 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package de.dertak.opennms.restclientapi;
+package org.opennms.forge.restclient.api;
 
-import de.dertak.opennms.restclientapi.helper.RestHelper;
+import org.opennms.forge.restclient.utils.RestConnectionParameter;
+import org.opennms.forge.restclient.utils.OnmsRestConnectionParameter;
+import org.opennms.forge.restclient.utils.RestHelper;
 import org.opennms.netmgt.model.OnmsOutage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
+/**
+ * <p>Starter class.</p>
+ *
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
+ * @version 1.0-SNAPSHOT
+ * @since 1.0-SNAPSHOT
+ */
 public class Starter {
 
     private static Logger logger = LoggerFactory.getLogger(Starter.class);
 
     public static void main(String[] args) {
         logger.info("OpenNMS Rest Client API");
-        
+
         String baseUrl = "http://demo.opennms.com/opennms/";
-        
+
         String username = "demo";
         String password = "demo";
 
         logger.info("Getting Outages from " + baseUrl);
-        List<OnmsOutage> outages = RestOutageProvider.getOutages(RestHelper.createApacheHttpClient(username, password), baseUrl, "?limit=100");
-        logger.info("Got '{}' from '{}'", outages.size(), baseUrl);
-        logger.info("Thanks for computing with OpenNMS!");
+        try {
+            RestConnectionParameter restConnectionParameter = new OnmsRestConnectionParameter(baseUrl, username, password);
+            List<OnmsOutage> outages = RestOutageProvider.getOutages(RestHelper.createApacheHttpClient(restConnectionParameter), "", "");
+            logger.info("Got '{}' from '{}'", outages.size(), baseUrl);
+            logger.info("Thanks for computing with OpenNMS!");
+        } catch (MalformedURLException e) {
+            logger.error("Invalid base URL '{}'", baseUrl);
+            System.exit(1);
+        }
     }
 }

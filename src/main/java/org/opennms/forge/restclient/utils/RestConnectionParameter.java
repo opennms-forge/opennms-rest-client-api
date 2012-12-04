@@ -1,13 +1,14 @@
-package de.dertak.opennms.restclientapi.helper;
+package org.opennms.forge.restclient.utils;
 
 import java.net.URL;
 
 /**
  * <p>RestConnectionParameter class.</p>
  *
- * @author Ronny Trommer <ronny@opennms.org>
- * @version $Id: $
- * @since 1.8.1
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
+ * @version 1.0-SNAPSHOT
+ * @since 1.0-SNAPSHOT
  */
 public interface RestConnectionParameter {
 
