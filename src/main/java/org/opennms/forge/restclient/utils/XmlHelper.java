@@ -25,19 +25,28 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package de.dertak.opennms.restclientapi.helper;
+package org.opennms.forge.restclient.utils;
 
 import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
-import java.io.StringReader;
-import java.io.StringWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.StringReader;
+import java.io.StringWriter;
 
+/**
+ * <p>XmlHelper class.</p>
+ *
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
+ * @version 1.0-SNAPSHOT
+ * @since 1.0-SNAPSHOT
+ */
 public class XmlHelper {
 
     private static Logger logger = LoggerFactory.getLogger(XmlHelper.class);

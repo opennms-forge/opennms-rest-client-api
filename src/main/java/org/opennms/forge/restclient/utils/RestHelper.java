@@ -25,21 +25,39 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package de.dertak.opennms.restclientapi.helper;
+package org.opennms.forge.restclient.utils;
 
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 
+/**
+ * <p>RestHelper class.</p>
+ * <p/>
+ * Providing static method to generate the HTTP client with given connection parameter.
+ *
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
+ * @version 1.0-SNAPSHOT
+ * @since 1.0-SNAPSHOT
+ */
 public class RestHelper {
 
-    public static ApacheHttpClient createApacheHttpClient(String username, String password) {
+    /**
+     * <p>createApacheHttpClient</p>
+     * <p/>
+     * Initialize HTTP client for ReST call
+     *
+     * @param restConnectionParameter Connection parameter for HTTP client as {@link RestConnectionParameter}
+     * @return configured HTTP client as {@link com.sun.jersey.client.apache.ApacheHttpClient}
+     */
+    public static ApacheHttpClient createApacheHttpClient(RestConnectionParameter restConnectionParameter) {
         DefaultApacheHttpClientConfig httpClientConfig = new DefaultApacheHttpClientConfig();
 
         httpClientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 
         httpClientConfig.getProperties().put(httpClientConfig.PROPERTY_PREEMPTIVE_AUTHENTICATION, Boolean.TRUE);
-        httpClientConfig.getState().setCredentials(null, null, -1, username, password);
+        httpClientConfig.getState().setCredentials(null, restConnectionParameter.getBaseUrl().getHost(), restConnectionParameter.getPort(), restConnectionParameter.getUsername(), restConnectionParameter.getPassword());
 
         ApacheHttpClient httpClient = ApacheHttpClient.create(httpClientConfig);
 

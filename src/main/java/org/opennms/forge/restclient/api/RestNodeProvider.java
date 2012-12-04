@@ -25,17 +25,26 @@
  *     http://www.opennms.org/
  *     http://www.opennms.com/
  *******************************************************************************/
-package de.dertak.opennms.restclientapi;
+package org.opennms.forge.restclient.api;
 
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
-import java.util.List;
 import org.opennms.netmgt.model.OnmsIpInterfaceList;
 import org.opennms.netmgt.model.OnmsNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
+/**
+ * <p>RestNodeProvider class.</p>
+ *
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
+ * @version 1.0-SNAPSHOT
+ * @since 1.0-SNAPSHOT
+ */
 public class RestNodeProvider {
 
     private static Logger logger = LoggerFactory.getLogger(RestNodeProvider.class);
@@ -44,7 +53,8 @@ public class RestNodeProvider {
         WebResource webResource = httpClient.resource(baseUrl + "rest/nodes" + parameters);
         List<OnmsNode> nodes = null;
         try {
-            nodes = webResource.header("Accept", "application/xml").get(new GenericType<List<OnmsNode>>() {});
+            nodes = webResource.header("Accept", "application/xml").get(new GenericType<List<OnmsNode>>() {
+            });
         } catch (Exception ex) {
             logger.debug("Rest-Call for Nodes went wrong", ex);
         }
@@ -63,7 +73,7 @@ public class RestNodeProvider {
 //    }
 
     public static OnmsIpInterfaceList getIpInterfacesByNode(ApacheHttpClient httpClient, String baseUrl, Integer nodeId, String parameters) {
-    WebResource webResource = httpClient.resource(baseUrl + "rest/nodes/" + nodeId + "/ipinterfaces" + parameters);
+        WebResource webResource = httpClient.resource(baseUrl + "rest/nodes/" + nodeId + "/ipinterfaces" + parameters);
         OnmsIpInterfaceList ipInterfaces = new OnmsIpInterfaceList();
         try {
             ipInterfaces = webResource.header("Accept", "application/xml").get(OnmsIpInterfaceList.class);
