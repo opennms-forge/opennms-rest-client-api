@@ -30,6 +30,7 @@ import org.opennms.netmgt.provision.persist.requisition.RequisitionCollection;
 import org.opennms.netmgt.provision.persist.requisition.RequisitionNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -132,15 +133,15 @@ public class RestRequisitionProvider {
     }
 
     /**
-     * <p>updateCategoriesByNode</p>
+     * <p>pushNodeToRequisition</p>
      * <p/>
-     * Method to update the provisioning requisition by node. This method will update just a single node with the
-     * applied surveillance categories. It will *NOT* synchronize the updated node to the OpenNMS database.
+     * Push one node to an OpenNMS remote requisition identified by foreign source. Update is for a single node.
+     * This method will *NOT* synchronize the updated node to the OpenNMS database.
      *
-     * @param foreignSource Foreign source name of the requisition as {@link java.lang.String}
+     * @param foreignSource   Foreign source name of the requisition as {@link java.lang.String}
      * @param requisitionNode Requisition node for update as {@link org.opennms.netmgt.provision.persist.requisition.RequisitionNode}
      */
-    public void updateCategoriesByNode(String foreignSource, RequisitionNode requisitionNode) {
+    public void pushNodeToRequisition(String foreignSource, RequisitionNode requisitionNode) {
         WebResource webResource = m_apacheHttpClient.resource(m_baseUrl +
                 ONMS_REST_REQUISITION_PATH + foreignSource +
                 ONMS_REST_REQUISITION_NODE_PATH);
@@ -154,9 +155,29 @@ public class RestRequisitionProvider {
     }
 
     /**
+     * <p>pushRequisition</p>
+     * <p/>
+     * Push one requisition to an OpenNMS. The requisition is in state pending and is ready to synchronize to
+     * the database.
+     *
+     * @param requisition Requisition to push on a remote OpenNMS as {@java org.opennms.netmgt.provision.persist.requisition.Requisition}
+     */
+    public void pushRequisition(Requisition requisition) {
+        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
+                requisition.getForeignSource());
+
+        try {
+            logger.debug("Try to push requisition '{}' to OpenNMS with '{}'", requisition.getForeignSource(), webResource.getURI());
+            webResource.type(MediaType.APPLICATION_XML).post(Requisition.class, requisition);
+        } catch (Exception ex) {
+            logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", new Object[]{requisition.getForeignSource(), webResource.getURI(), ex.getMessage(), ex});
+        }
+    }
+
+    /**
      * <p>synchronizeForeignSource</p>
      * <p/>
-     * Synchronize all nodes in a requisition identified by the foreign source.
+     * Synchronize all nodes in a requisition identified by the foreign source with the OpenNMS database.
      *
      * @param foreignSource Synchronize all nodes identified by foreign source {@link java.lang.String}
      */
@@ -167,18 +188,19 @@ public class RestRequisitionProvider {
             logger.debug("Try to synchronize provisioning requisition: '{}'", webResource.getURI());
             webResource.type(MediaType.APPLICATION_XML).put();
         } catch (Exception ex) {
-            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'.", foreignSource, webResource.getURI(), ex);
+            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", new Object[]{foreignSource, webResource.getURI(), ex.getMessage(), ex});
         }
     }
 
     /**
-     * <p>synchronizeRequisitionNewly</p>
+     * <p>synchronizeRequisitionSkipExisting</p>
      * <p/>
-     * Synchronize and scan non existing nodes to preserve unnecessary service detection or database load.
+     * Synchronize requisition with new nodes identified by foreign source. Use this method to skip existing
+     * nodes for re-import and detector rescan to preserve database load and provisioning load.
      *
      * @param foreignSource Foreign source to synchronize only non existing nodes as {@link java.lang.String}
      */
-    public void synchronizeRequisitionNewly(String foreignSource) {
+    public void synchronizeRequisitionSkipExisting(String foreignSource) {
         WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
                 foreignSource + ONMS_PROVISIONING_REQUISITION_RESCAN_FALSE);
 
@@ -186,7 +208,7 @@ public class RestRequisitionProvider {
             logger.debug("Try to synchronize provisioning requisition: '{}'", webResource.getURI());
             webResource.type(MediaType.APPLICATION_XML).put();
         } catch (Exception ex) {
-            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'.", foreignSource, webResource.getURI(), ex);
+            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", new Object[]{foreignSource, webResource.getURI(), ex.getMessage(), ex});
         }
     }
 }
