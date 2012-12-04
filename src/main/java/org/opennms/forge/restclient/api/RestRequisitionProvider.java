@@ -137,6 +137,7 @@ public class RestRequisitionProvider {
      * Method to update the provisioning requisition by node. This method will update just a single node with the
      * applied surveillance categories. It will *NOT* synchronize the updated node to the OpenNMS database.
      *
+     * @param foreignSource Foreign source name of the requisition as {@link java.lang.String}
      * @param requisitionNode Requisition node for update as {@link org.opennms.netmgt.provision.persist.requisition.RequisitionNode}
      */
     public void updateCategoriesByNode(String foreignSource, RequisitionNode requisitionNode) {
@@ -166,7 +167,7 @@ public class RestRequisitionProvider {
             logger.debug("Try to synchronize provisioning requisition: '{}'", webResource.getURI());
             webResource.type(MediaType.APPLICATION_XML).put();
         } catch (Exception ex) {
-            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'.", foreignSource, webResource.getURI());
+            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'.", foreignSource, webResource.getURI(), ex);
         }
     }
 
@@ -185,7 +186,7 @@ public class RestRequisitionProvider {
             logger.debug("Try to synchronize provisioning requisition: '{}'", webResource.getURI());
             webResource.type(MediaType.APPLICATION_XML).put();
         } catch (Exception ex) {
-            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'.", foreignSource, webResource.getURI());
+            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'.", foreignSource, webResource.getURI(), ex);
         }
     }
 }
