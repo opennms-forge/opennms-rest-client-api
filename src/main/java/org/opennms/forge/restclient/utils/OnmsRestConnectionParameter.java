@@ -28,7 +28,6 @@
 
 package org.opennms.forge.restclient.utils;
 
-import org.opennms.forge.restclient.utils.RestConnectionParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
