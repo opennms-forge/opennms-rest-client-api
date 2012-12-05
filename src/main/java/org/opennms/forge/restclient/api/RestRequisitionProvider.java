@@ -123,12 +123,13 @@ public class RestRequisitionProvider {
     public Requisition getRequisition(String foreignSource, String parameters) {
         m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + foreignSource + parameters);
         Requisition requisition = null;
-        logger.debug("Try getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
+        logger.debug("TRY - getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         try {
             requisition = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(Requisition.class);
         } catch (Exception ex) {
             logger.debug("Rest call for Requisitions went wrong. Error message '{}'.", ex);
         }
+        logger.debug("DONE - getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         return requisition;
     }
 
