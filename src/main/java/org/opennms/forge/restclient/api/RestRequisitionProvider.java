@@ -48,7 +48,7 @@ public class RestRequisitionProvider {
     /**
      * Path to OpenNMS ReST resource for requisition
      */
-    private static final String ONMS_REST_REQUISITION_PATH = "rest/requisitions/";
+    private static final String ONMS_REST_REQUISITION_PATH = "rest/requisitions";
 
     /**
      * Path to OpenNMS ReST resource for requisition nodes
@@ -165,8 +165,7 @@ public class RestRequisitionProvider {
      * @param requisition Requisition to push on a remote OpenNMS as {@java org.opennms.netmgt.provision.persist.requisition.Requisition}
      */
     public void pushRequisition(Requisition requisition) {
-        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
-                requisition.getForeignSource());
+        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH);
 
         try {
             logger.debug("Try to push requisition '{}' to OpenNMS with '{}'", requisition.getForeignSource(), webResource.getURI());
@@ -204,7 +203,7 @@ public class RestRequisitionProvider {
      * @param foreignSource Foreign source to synchronize only non existing nodes as {@link java.lang.String}
      */
     public void synchronizeRequisitionSkipExisting(String foreignSource) {
-        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
+        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + "/" +
                 foreignSource + ONMS_PROVISIONING_REQUISITION_RESCAN_FALSE);
 
         try {
