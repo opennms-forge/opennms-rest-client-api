@@ -165,12 +165,11 @@ public class RestRequisitionProvider {
      * @param requisition Requisition to push on a remote OpenNMS as {@java org.opennms.netmgt.provision.persist.requisition.Requisition}
      */
     public void pushRequisition(Requisition requisition) {
-        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
-                requisition.getForeignSource());
+        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH);
 
         try {
             logger.debug("Try to push requisition '{}' to OpenNMS with '{}'", requisition.getForeignSource(), webResource.getURI());
-            webResource.type(MediaType.APPLICATION_XML).post(Requisition.class, requisition);
+            webResource.type(MediaType.APPLICATION_XML).post(Requisition.class, requisition.getForeignSource());
         } catch (Exception ex) {
             logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", new Object[]{requisition.getForeignSource(), webResource.getURI(), ex.getMessage(), ex});
         }
