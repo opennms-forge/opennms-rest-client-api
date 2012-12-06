@@ -40,6 +40,8 @@ import javax.ws.rs.core.MediaType;
  * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
+ *
+ * TODO should be static?
  */
 public class RestRequisitionProvider {
 
@@ -142,6 +144,7 @@ public class RestRequisitionProvider {
      * @param foreignSource   Foreign source name of the requisition as {@link java.lang.String}
      * @param requisitionNode Requisition node for update as {@link org.opennms.netmgt.provision.persist.requisition.RequisitionNode}
      */
+    //TODO Indigo why is it a ClientResponse.class in this method and a different one in pushRequisition?
     public void pushNodeToRequisition(String foreignSource, RequisitionNode requisitionNode) {
         WebResource webResource = m_apacheHttpClient.resource(m_baseUrl +
                 ONMS_REST_REQUISITION_PATH + foreignSource +
@@ -185,13 +188,14 @@ public class RestRequisitionProvider {
      */
     public void synchronizeRequisition(String foreignSource) {
         WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
-                foreignSource);
+                foreignSource + "/import");
         try {
-            logger.debug("Try to synchronize provisioning requisition: '{}'", webResource.getURI());
-            webResource.type(MediaType.APPLICATION_XML).put();
+            logger.debug("TRY  - to synchronize provisioning requisition: '{}'", webResource.getURI());
+            webResource.type(MediaType.APPLICATION_FORM_URLENCODED).put();
         } catch (Exception ex) {
             logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", new Object[]{foreignSource, webResource.getURI(), ex.getMessage(), ex});
         }
+            logger.debug("DONE - synchronize provisioning requisition: '{}'", webResource.getURI());
     }
 
     /**
