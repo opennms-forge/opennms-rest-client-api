@@ -27,8 +27,8 @@
  *******************************************************************************/
 package org.opennms.forge.restclient.api;
 
-import org.opennms.forge.restclient.utils.RestConnectionParameter;
 import org.opennms.forge.restclient.utils.OnmsRestConnectionParameter;
+import org.opennms.forge.restclient.utils.RestConnectionParameter;
 import org.opennms.forge.restclient.utils.RestHelper;
 import org.opennms.netmgt.model.OnmsOutage;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ import java.util.List;
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
  */
-public class Starter {
+class Starter {
 
     private static Logger logger = LoggerFactory.getLogger(Starter.class);
 

@@ -56,6 +56,7 @@ public class OnmsRestConnectionParameter implements RestConnectionParameter {
         m_username = username;
         m_password = password;
         m_baseUrl = new URL(baseUrl);
+        logger.debug("ReST connection parameter set to URL: '{}' username:'{}', password:'{}'", m_baseUrl, m_username, m_password);
     }
 
     @Override

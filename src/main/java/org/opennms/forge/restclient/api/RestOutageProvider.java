@@ -47,7 +47,7 @@ import java.util.Map;
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
  */
-public class RestOutageProvider {
+class RestOutageProvider {
 
     private static Logger logger = LoggerFactory.getLogger(RestOutageProvider.class);
 

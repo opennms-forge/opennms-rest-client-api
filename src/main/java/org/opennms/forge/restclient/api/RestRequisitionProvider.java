@@ -20,7 +20,6 @@
  */
 package org.opennms.forge.restclient.api;
 
-import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.opennms.forge.restclient.utils.RestConnectionParameter;
@@ -40,12 +39,10 @@ import javax.ws.rs.core.MediaType;
  * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
- *
- * TODO should be static?
+ *        <p/>
+ *        TODO should be static?
  */
 public class RestRequisitionProvider {
-
-    private static Logger logger = LoggerFactory.getLogger(RestRequisitionProvider.class);
 
     /**
      * Path to OpenNMS ReST resource for requisition
@@ -66,6 +63,11 @@ public class RestRequisitionProvider {
      * ReST request header
      */
     private static final String HEADER_NAME_ACCEPT = "Accept";
+
+    /**
+     * Logging
+     */
+    private static Logger logger = LoggerFactory.getLogger(RestRequisitionProvider.class);
 
     /**
      * Handle ReST request
@@ -144,19 +146,18 @@ public class RestRequisitionProvider {
      * @param foreignSource   Foreign source name of the requisition as {@link java.lang.String}
      * @param requisitionNode Requisition node for update as {@link org.opennms.netmgt.provision.persist.requisition.RequisitionNode}
      */
-    //TODO Indigo why is it a ClientResponse.class in this method and a different one in pushRequisition?
     public void pushNodeToRequisition(String foreignSource, RequisitionNode requisitionNode) {
-        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl +
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl +
                 ONMS_REST_REQUISITION_PATH + foreignSource +
                 ONMS_REST_REQUISITION_NODE_PATH);
-
+        logger.debug("TRY - pushNodeToRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         try {
-            logger.debug("Requisition node to push: '{}' to URL '{}'", requisitionNode, webResource.getURI());
-            webResource.type(MediaType.APPLICATION_XML).post(ClientResponse.class, requisitionNode);
+            logger.debug("Requisition node to push: '{}' to URL '{}'", requisitionNode, m_webResource.getURI());
+            m_webResource.type(MediaType.APPLICATION_XML).post(RequisitionNode.class, requisitionNode);
         } catch (Exception ex) {
             logger.debug("Rest call for Node Update Requisitions went wrong", ex);
         }
-        logger.debug("Push requisition '{}' was successfull.", foreignSource);
+        logger.debug("DONE - pushNodeToRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
     }
 
     /**
@@ -165,18 +166,18 @@ public class RestRequisitionProvider {
      * Push one requisition to an OpenNMS. The requisition is in state pending and is ready to synchronize to
      * the database.
      *
-     * @param requisition Requisition to push on a remote OpenNMS as {@java org.opennms.netmgt.provision.persist.requisition.Requisition}
+     * @param requisition Requisition to push on a remote OpenNMS as {@link org.opennms.netmgt.provision.persist.requisition.Requisition}
      */
     public void pushRequisition(Requisition requisition) {
-        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH);
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH);
 
         try {
-            logger.debug("Try to push requisition '{}' to OpenNMS with '{}'", requisition.getForeignSource(), webResource.getURI());
-            webResource.type(MediaType.APPLICATION_XML).post(Requisition.class, requisition);
+            logger.debug("TRY - pushRequisition '{}', '{}'", requisition.getForeignSource(), m_webResource.getURI());
+            m_webResource.type(MediaType.APPLICATION_XML).post(Requisition.class, requisition);
         } catch (Exception ex) {
-            logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", new Object[]{requisition.getForeignSource(), webResource.getURI(), ex.getMessage(), ex});
+            logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", requisition.getForeignSource(), m_webResource.getURI(), ex.getMessage(), ex);
         }
-        logger.debug("Push requisition '{}' was successfull.", requisition.getForeignSource());
+        logger.debug("DONE - pushRequisition '{}'", requisition.getForeignSource());
     }
 
     /**
@@ -187,18 +188,19 @@ public class RestRequisitionProvider {
      * @param foreignSource Synchronize all nodes identified by foreign source {@link java.lang.String}
      */
     public void synchronizeRequisition(String foreignSource) {
-        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
                 foreignSource + "/import");
         try {
-            logger.debug("TRY  - to synchronize provisioning requisition: '{}'", webResource.getURI());
-            webResource.type(MediaType.APPLICATION_FORM_URLENCODED).put();
+            logger.debug("TRY  - to synchronize provisioning requisition: '{}'", m_webResource.getURI());
+            m_webResource.type(MediaType.APPLICATION_FORM_URLENCODED).put();
         } catch (Exception ex) {
-            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", new Object[]{foreignSource, webResource.getURI(), ex.getMessage(), ex});
+            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
         }
-            logger.debug("DONE - synchronize provisioning requisition: '{}'", webResource.getURI());
+        logger.debug("DONE - synchronize provisioning requisition: '{}'", m_webResource.getURI());
     }
 
     /**
+     * TODO: never used
      * <p>synchronizeRequisitionSkipExisting</p>
      * <p/>
      * Synchronize requisition with new nodes identified by foreign source. Use this method to skip existing
@@ -207,14 +209,14 @@ public class RestRequisitionProvider {
      * @param foreignSource Foreign source to synchronize only non existing nodes as {@link java.lang.String}
      */
     public void synchronizeRequisitionSkipExisting(String foreignSource) {
-        WebResource webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + "/" +
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + "/" +
                 foreignSource + ONMS_PROVISIONING_REQUISITION_RESCAN_FALSE);
 
         try {
-            logger.debug("Try to synchronize provisioning requisition: '{}'", webResource.getURI());
-            webResource.type(MediaType.APPLICATION_XML).put();
+            logger.debug("Try to synchronize provisioning requisition: '{}'", m_webResource.getURI());
+            m_webResource.type(MediaType.APPLICATION_XML).put();
         } catch (Exception ex) {
-            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", new Object[]{foreignSource, webResource.getURI(), ex.getMessage(), ex});
+            logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
         }
     }
 }

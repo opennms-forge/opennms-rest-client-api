@@ -45,7 +45,7 @@ import java.util.List;
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
  */
-public class RestNodeProvider {
+class RestNodeProvider {
 
     private static Logger logger = LoggerFactory.getLogger(RestNodeProvider.class);
 
