@@ -125,7 +125,7 @@ public class RestRequisitionProvider {
      * @return Requisition as {@link org.opennms.netmgt.provision.persist.requisition.Requisition}
      */
     public Requisition getRequisition(String foreignSource, String parameters) {
-        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + foreignSource + parameters);
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + "/" + foreignSource + parameters);
         Requisition requisition = null;
         logger.debug("TRY - getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         try {

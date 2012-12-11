@@ -45,7 +45,7 @@ import java.util.List;
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
  */
-class Starter {
+public class Starter {
 
     private static Logger logger = LoggerFactory.getLogger(Starter.class);
 
