@@ -36,7 +36,7 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
  * <p/>
  * Providing static method to generate the HTTP client with given connection parameter.
  *
- * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>
  * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
