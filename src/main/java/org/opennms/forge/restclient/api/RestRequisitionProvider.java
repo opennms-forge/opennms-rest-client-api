@@ -21,6 +21,7 @@
 package org.opennms.forge.restclient.api;
 
 import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.UniformInterface;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
@@ -110,7 +111,7 @@ public class RestRequisitionProvider {
         try {
             requisitions = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(RequisitionCollection.class);
         } catch (UniformInterfaceException | ClientHandlerException ex) {
-            logger.debug("Rest call for Requisitions went wrong. Error message '{}'. URL: '{}'", ex, m_webResource.getURI());
+            logger.error("Rest call for Requisitions went wrong. Error message '{}'. URL: '{}'", ex, m_webResource.getURI());
         }
         return requisitions;
     }
@@ -131,7 +132,7 @@ public class RestRequisitionProvider {
         try {
             requisition = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(Requisition.class);
         } catch (UniformInterfaceException | ClientHandlerException ex) {
-            logger.debug("Rest call for Requisitions went wrong. Error message '{}'.", ex);
+            logger.error("Rest call for Requisitions went wrong. Error message '{}'.", ex);
         }
         logger.debug("DONE - getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         return requisition;
@@ -154,8 +155,14 @@ public class RestRequisitionProvider {
         try {
             logger.debug("Requisition node to push: '{}' to URL '{}'", requisitionNode, m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_XML).post(RequisitionNode.class, requisitionNode);
-        } catch (UniformInterfaceException | ClientHandlerException ex) {
-            logger.debug("Rest call for Node Update Requisitions went wrong", ex);
+        } catch (UniformInterfaceException ex) {
+            if (ex.getResponse().getStatus() == 303) {
+                logger.debug("Got 303 redirect, not following");
+            } else { 
+                logger.error("Rest call for Node Update Requisitions went wrong", ex);
+            }
+        } catch (ClientHandlerException ex) {
+            logger.error("Rest call for Node Update Requisitions went wrong", ex);
         }
         logger.debug("DONE - pushNodeToRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
     }
@@ -174,7 +181,13 @@ public class RestRequisitionProvider {
         try {
             logger.debug("TRY  - pushRequisition '{}', '{}'", requisition.getForeignSource(), m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_XML).post(Requisition.class, requisition);
-        } catch (UniformInterfaceException | ClientHandlerException ex) {
+        } catch (UniformInterfaceException ex) {
+            if (ex.getResponse().getStatus() == 303) {
+                logger.debug("Got 303 redirect, not following");
+            } else {
+                logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", requisition.getForeignSource(), m_webResource.getURI(), ex.getMessage(), ex);
+            }
+        } catch (ClientHandlerException ex) {
             logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", requisition.getForeignSource(), m_webResource.getURI(), ex.getMessage(), ex);
         }
         logger.debug("DONE - pushRequisition '{}'", requisition.getForeignSource());
@@ -193,7 +206,13 @@ public class RestRequisitionProvider {
         try {
             logger.debug("TRY  - to synchronize provisioning requisition: '{}'", m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_FORM_URLENCODED).put();
-        } catch (UniformInterfaceException | ClientHandlerException ex) {
+        } catch (UniformInterfaceException ex) {
+            if (ex.getResponse().getStatus() == 303) {
+                logger.debug("Got 303 redirect, not following");
+            } else {
+                logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
+            }
+        } catch (ClientHandlerException ex) {
             logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
         }
         logger.debug("DONE - synchronize provisioning requisition: '{}'", m_webResource.getURI());
@@ -211,12 +230,18 @@ public class RestRequisitionProvider {
     public void synchronizeRequisitionSkipExisting(String foreignSource) {
         m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + "/" +
                 foreignSource + ONMS_PROVISIONING_REQUISITION_RESCAN_FALSE);
-
         try {
             logger.debug("TRY  - to synchronize provisioning requisition: '{}'", m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_XML).put();
-        } catch (UniformInterfaceException | ClientHandlerException ex) {
+        } catch (UniformInterfaceException ex) {
+            if (ex.getResponse().getStatus() == 303) {
+                logger.debug("Got 303 redirect, not following");
+            } else {
+                logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
+            }
+        } catch (ClientHandlerException ex) {
             logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
         }
+        logger.debug("DONE - synchronize provisioning requisition: '{}'", m_webResource.getURI());
     }
 }

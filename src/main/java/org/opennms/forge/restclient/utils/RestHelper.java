@@ -55,8 +55,8 @@ public class RestHelper {
         DefaultApacheHttpClientConfig httpClientConfig = new DefaultApacheHttpClientConfig();
 
         httpClientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-
-        httpClientConfig.getProperties().put(httpClientConfig.PROPERTY_PREEMPTIVE_AUTHENTICATION, Boolean.TRUE);
+        
+        httpClientConfig.getProperties().put(DefaultApacheHttpClientConfig.PROPERTY_PREEMPTIVE_AUTHENTICATION, Boolean.TRUE); 
         httpClientConfig.getState().setCredentials(null, restConnectionParameter.getBaseUrl().getHost(), restConnectionParameter.getPort(), restConnectionParameter.getUsername(), restConnectionParameter.getPassword());
 
         ApacheHttpClient httpClient = ApacheHttpClient.create(httpClientConfig);
