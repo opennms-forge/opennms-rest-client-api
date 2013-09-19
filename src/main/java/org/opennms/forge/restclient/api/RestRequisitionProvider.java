@@ -21,7 +21,6 @@
 package org.opennms.forge.restclient.api;
 
 import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.UniformInterface;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
