@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * <p>Starter class.</p>
  *
- * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>
  * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
@@ -52,10 +52,10 @@ public class Starter {
     public static void main(String[] args) {
         logger.info("OpenNMS Rest Client API");
 
-        String baseUrl = "http://demo.opennms.com/opennms/";
+        String baseUrl = "http://localhost:8980/opennms/";
 
-        String username = "demo";
-        String password = "demo";
+        String username = "admin";
+        String password = "admin";
 
         logger.info("Getting Outages from " + baseUrl);
         try {
@@ -64,7 +64,7 @@ public class Starter {
             logger.info("Got '{}' from '{}'", outages.size(), baseUrl);
             logger.info("Thanks for computing with OpenNMS!");
         } catch (MalformedURLException e) {
-            logger.error("Invalid base URL '{}'", baseUrl);
+            logger.error("Invalid base URL '{}'", baseUrl, e);
             System.exit(1);
         }
     }

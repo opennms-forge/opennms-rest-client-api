@@ -20,6 +20,8 @@
  */
 package org.opennms.forge.restclient.api;
 
+import com.sun.jersey.api.client.ClientHandlerException;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 import org.opennms.forge.restclient.utils.RestConnectionParameter;
@@ -35,12 +37,10 @@ import javax.ws.rs.core.MediaType;
 /**
  * <p>RestRequisitionProvider class.</p>
  *
- * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>*
+ * @author <a href="mailto:markus@opennms.org">Markus Neumann</a>
  * @author <a href="mailto:ronny@opennms.org">Ronny Trommer</a>
  * @version 1.0-SNAPSHOT
  * @since 1.0-SNAPSHOT
- *        <p/>
- *        TODO should be static?
  */
 public class RestRequisitionProvider {
 
@@ -109,7 +109,7 @@ public class RestRequisitionProvider {
         RequisitionCollection requisitions = null;
         try {
             requisitions = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(RequisitionCollection.class);
-        } catch (Exception ex) {
+        } catch (UniformInterfaceException | ClientHandlerException ex) {
             logger.debug("Rest call for Requisitions went wrong. Error message '{}'. URL: '{}'", ex, m_webResource.getURI());
         }
         return requisitions;
@@ -130,7 +130,7 @@ public class RestRequisitionProvider {
         logger.debug("TRY - getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         try {
             requisition = m_webResource.header(HEADER_NAME_ACCEPT, MediaType.APPLICATION_XML).get(Requisition.class);
-        } catch (Exception ex) {
+        } catch (UniformInterfaceException | ClientHandlerException ex) {
             logger.debug("Rest call for Requisitions went wrong. Error message '{}'.", ex);
         }
         logger.debug("DONE - getRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
@@ -148,13 +148,13 @@ public class RestRequisitionProvider {
      */
     public void pushNodeToRequisition(String foreignSource, RequisitionNode requisitionNode) {
         m_webResource = m_apacheHttpClient.resource(m_baseUrl +
-                ONMS_REST_REQUISITION_PATH + foreignSource +
+                ONMS_REST_REQUISITION_PATH + "/" + foreignSource +
                 ONMS_REST_REQUISITION_NODE_PATH);
-        logger.debug("TRY - pushNodeToRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
+        logger.debug("TRY  - pushNodeToRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
         try {
             logger.debug("Requisition node to push: '{}' to URL '{}'", requisitionNode, m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_XML).post(RequisitionNode.class, requisitionNode);
-        } catch (Exception ex) {
+        } catch (UniformInterfaceException | ClientHandlerException ex) {
             logger.debug("Rest call for Node Update Requisitions went wrong", ex);
         }
         logger.debug("DONE - pushNodeToRequisition '{}', '{}'", foreignSource, m_webResource.getURI());
@@ -172,9 +172,9 @@ public class RestRequisitionProvider {
         m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH);
 
         try {
-            logger.debug("TRY - pushRequisition '{}', '{}'", requisition.getForeignSource(), m_webResource.getURI());
+            logger.debug("TRY  - pushRequisition '{}', '{}'", requisition.getForeignSource(), m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_XML).post(Requisition.class, requisition);
-        } catch (Exception ex) {
+        } catch (UniformInterfaceException | ClientHandlerException ex) {
             logger.error("Unable to push requisition '{}' to OpenNMS with '{}'. Error message '{}'.", requisition.getForeignSource(), m_webResource.getURI(), ex.getMessage(), ex);
         }
         logger.debug("DONE - pushRequisition '{}'", requisition.getForeignSource());
@@ -188,12 +188,12 @@ public class RestRequisitionProvider {
      * @param foreignSource Synchronize all nodes identified by foreign source {@link java.lang.String}
      */
     public void synchronizeRequisition(String foreignSource) {
-        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH +
-                foreignSource + "/import");
+        m_webResource = m_apacheHttpClient.resource(m_baseUrl + ONMS_REST_REQUISITION_PATH + "/" +
+                foreignSource + "/import/");
         try {
             logger.debug("TRY  - to synchronize provisioning requisition: '{}'", m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_FORM_URLENCODED).put();
-        } catch (Exception ex) {
+        } catch (UniformInterfaceException | ClientHandlerException ex) {
             logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
         }
         logger.debug("DONE - synchronize provisioning requisition: '{}'", m_webResource.getURI());
@@ -213,9 +213,9 @@ public class RestRequisitionProvider {
                 foreignSource + ONMS_PROVISIONING_REQUISITION_RESCAN_FALSE);
 
         try {
-            logger.debug("Try to synchronize provisioning requisition: '{}'", m_webResource.getURI());
+            logger.debug("TRY  - to synchronize provisioning requisition: '{}'", m_webResource.getURI());
             m_webResource.type(MediaType.APPLICATION_XML).put();
-        } catch (Exception ex) {
+        } catch (UniformInterfaceException | ClientHandlerException ex) {
             logger.error("Unable to synchronize provisioning requisition '{}' with '{}'. Error message '{}'.", foreignSource, m_webResource.getURI(), ex.getMessage(), ex);
         }
     }
